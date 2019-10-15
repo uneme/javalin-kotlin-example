@@ -1,0 +1,56 @@
+group 'com.example.project'
+version '1.0-SNAPSHOT'
+
+ext {
+    // essential libraries
+    javalin_version = "3.5.0"
+    slf4j_version = "1.7.28"
+    // database libraries
+    h2_version = "1.4.200"
+    hikaricp_version = "3.4.1"
+    // authentication libraries
+    javajwt_version = "3.8.3"
+}
+
+buildscript {
+    ext.kotlin_version = "1.3.+"
+
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'application'
+mainClassName = "com.example.project.AppKt"
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    // essential libraries
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile "io.javalin:javalin:$javalin_version"
+    compile "org.slf4j:slf4j-simple:$slf4j_version"
+    // database libraries
+    compile "com.h2database:h2:$h2_version"
+    compile "com.zaxxer:HikariCP:$hikaricp_version"
+    // authentication libraries
+    compile "com.auth0:java-jwt:$javajwt_version"
+
+//    testCompile "junit:junit:$junit_version"
+//    testCompile "com.mashape.unirest:unirest-java:$unirest_version"
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
