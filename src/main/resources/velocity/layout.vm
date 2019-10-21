@@ -1,0 +1,37 @@
+#macro(mainLayout)
+<html>
+<head>
+    <title>$prop.get("BASE_TITLE")</title>
+</head>
+<body>
+    <header>
+        <div id="navigation">
+            <ul id="menu">
+                #if($jwt)
+                    <li>
+                        <form method="post" action="/logout">
+                            <button id="logout">$prop.get("BASE_BUTTON_LOGOUT")</button>
+                        </form>
+                    </li>
+                #else
+                    <li>
+                        <form method="post" action="/logout">
+                            <button id="logout">$prop.get("BASE_BUTTON_LOGOUT")</button>
+                        </form>
+                    </li>
+                    <li><a href="/login">$prop.get("BASE_BUTTON_LOGIN")</a></li>
+                #end
+            </ul>
+        </div>
+    </header>
+    <main>
+        <div id="content">
+            $bodyContent
+        </div>
+    </main>
+    <footer>
+        $prop.get("BASE_FOOTER")
+    </footer>
+</body>
+</html>
+#end
