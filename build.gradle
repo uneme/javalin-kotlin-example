@@ -12,6 +12,9 @@ ext {
     // authentication libraries
     paseto_version = "0.5.0"
     kmehrunesjwt_version = "v0.2"
+    // unit test
+    jupiter_version = "5.5.2"
+    mockito_version = "1.10.19"
 }
 
 buildscript {
@@ -48,6 +51,10 @@ dependencies {
     compile "com.zaxxer:HikariCP:$hikaricp_version"
     // authentication libraries
     compile "net.aholbrook.paseto:meta:$paseto_version"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$jupiter_version"
+    testImplementation "org.mockito:mockito-all:$mockito_version"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$jupiter_version"
 }
 
 compileKotlin {
@@ -65,4 +72,8 @@ jar {
 task console(type: Exec) {
   commandLine "kotlinc-jvm", "-cp", sourceSets["main"].runtimeClasspath.join(":")
   standardInput = System.in
+}
+
+test {
+    useJUnitPlatform()
 }

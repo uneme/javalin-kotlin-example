@@ -11,7 +11,7 @@ object LoginController: BaseController {
         ctx.renderWith("/velocity/login/login.vm", mutableMapOf<String,Any?>(), null)
     }
 
-    fun loginTo(ctx: Context): Unit = if (LoginService.canLoggedIn(ctx)) {
+    fun loginTo(ctx: Context): Unit = if (LoginService.login(ctx)) {
         ctx.redirect("/index") 
     } else {
         ctx.redirect("/login")

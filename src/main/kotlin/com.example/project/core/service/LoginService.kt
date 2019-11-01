@@ -19,16 +19,6 @@ object LoginService {
     private val tokenKey = Config.TOKEN_PSK.toByteArray()
     private val tokenService = PasetoBuilders.V2.localService({ tokenKey }, Token::class.java).build()
 
-    fun isLoggedIn(ctx: Context): Boolean =
-        ctx.cookieStore<String>(Config.TOKEN_COOKIE_KEY).let { 
-            try {
-                this.tokenService.decode(it)
-                true
-            } catch (e: Exception) {
-                false
-            }
-        } ?: false
-
     private fun isAuthorized(username: String, password: String): Boolean =
         permissionOf(username, password)?.let { true } ?: false
 
@@ -40,14 +30,6 @@ object LoginService {
         userRoleMap.get(Pair(username, password))
 
 
-    fun accessManager(handler: Handler, ctx: Context, permittedRoles: Set<Role>) {
-        when {
-            permittedRoles.contains(AccessRole.ANYONE) -> handler.handle(ctx)
-            ctx.userRoles.any { it in permittedRoles } -> handler.handle(ctx)
-            else -> ctx.status(401).json("Unauthoried")
-        }
-    }
-
     private val Context.userRoles: Set<AccessRole>
         get() {
             val token = this.cookieStore<String>(Config.TOKEN_COOKIE_KEY)
@@ -57,7 +39,15 @@ object LoginService {
             } ?: setOf()
         }
 
-    fun canLoggedIn(ctx: Context): Boolean {
+    fun accessManager(handler: Handler, ctx: Context, permittedRoles: Set<Role>) {
+        when {
+            permittedRoles.contains(AccessRole.ANYONE) -> handler.handle(ctx)
+            ctx.userRoles.any { it in permittedRoles } -> handler.handle(ctx)
+            else -> ctx.status(401).json("Unauthoried")
+        }
+    }
+
+    fun login(ctx: Context): Boolean {
         ctx.formParam("username")?.let { username ->
             ctx.formParam("password")?.let { password ->
                 if (isAuthorized(username, password)) {
@@ -76,6 +66,17 @@ object LoginService {
         }
         return false
     }
+
+    fun isLoggedIn(ctx: Context): Boolean =
+        ctx.cookieStore<String>(Config.TOKEN_COOKIE_KEY).let { 
+            try {
+                this.tokenService.decode(it)
+                true
+            } catch (e: Exception) {
+                false
+            }
+        } ?: false
+
 
     fun isLoggedOut(ctx: Context): Boolean {
         ctx.clearCookieStore()
